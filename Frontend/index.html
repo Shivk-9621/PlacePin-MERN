@@ -1,15 +1,25 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="backdrop-hook"></div>
-    <div id="drawer-hook"></div>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite + React</title>
+  <script 
+    defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNSwQv26TsAXjuQ__4MMTfBtr0ydq6P2g&v=weekly"
+    onerror="console.error('Google Maps API failed to load.')">
+  </script>
+</head>
+
+<body>
+  <div id="backdrop-hook"></div>
+  <div id="modal-hook"></div>
+  <div id="drawer-hook"></div>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+
+</body>
+
 </html>
