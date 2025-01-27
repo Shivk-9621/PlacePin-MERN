@@ -30,7 +30,7 @@ app.use((error, req, res, next) => {
 mongoose
   .connect('mongodb+srv://RefresherSiva:RefresherSiva%409621@cluster0.si423.mongodb.net/places?retryWrites=true&w=majority&appName=Cluster0')
   .then(() => {
-    app.listen(5000);
+    app.listen(5001);
     console.log('Database connected')
   })
   .catch((error) => {

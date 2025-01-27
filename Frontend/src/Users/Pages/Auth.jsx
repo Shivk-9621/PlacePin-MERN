@@ -1,4 +1,4 @@
-import { useState,useContext } from "react";
+import { useState, useContext } from "react";
 import "./Auth.css";
 import Card from "../../Shared/Components/UIElements/Card";
 import Input from "../../Shared/Components/FormElements/Input";
@@ -12,9 +12,9 @@ import { useForm } from "../../Shared/hooks/form-hook";
 import { AuthContext } from "../../Shared/context/auth-context";
 
 const Auth = () => {
-  const {login} = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const [isLoginMode, setIsLoginMode] = useState(true);
-  const [formState, inputHandler,setFormData] = useForm(
+  const [formState, inputHandler, setFormData] = useForm(
     {
       email: {
         value: "",
@@ -29,26 +29,51 @@ const Auth = () => {
   );
 
   const switchModeHandler = () => {
-    if(!isLoginMode){
-        setFormData({
-            ...formState.inputs,
-            name: undefined
-        }, formState.inputs.email.isValid && formState.inputs.password.isValid)
-    }else{
-        setFormData({
-            ...formState.inputs,
-            name:{
-                value:'',
-                isValid: false
-            }
-        },false)
+    if (!isLoginMode) {
+      setFormData({
+        ...formState.inputs,
+        name: undefined
+      }, formState.inputs.email.isValid && formState.inputs.password.isValid)
+    } else {
+      setFormData({
+        ...formState.inputs,
+        name: {
+          value: '',
+          isValid: false
+        }
+      }, false)
     }
     setIsLoginMode((prevMode) => !prevMode);
   };
 
-  const authSubmitHandler = (event) => {
+  const authSubmitHandler = async (event) => {
     event.preventDefault();
-    console.log(formState.inputs);
+    if (isLoginMode) {
+
+    } else {
+      try {
+        const url = 'http://localhost:5000/api/users/signup';
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: formState.inputs.name.value,
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value
+          })
+        }
+
+        const response = await fetch(url, options);
+        const responseData = await response.json();
+        console.log(responseData);
+      } catch (err) {
+        console.log(err);
+      }
+
+    }
+
     login();
   };
 
@@ -65,7 +90,7 @@ const Auth = () => {
             label="Your Name"
             validators={[VALIDATOR_REQUIRE()]}
             errorText='Please enter a name'
-            onInput={inputHandler }
+            onInput={inputHandler}
           />
         )}
         <Input
