@@ -77,12 +77,12 @@ const Auth = () => {
         );
 
         console.log(responseData, "this is response data");
-        login();
+        login(responseData.user.id);
       } catch (err) {}
     } else {
       try {
         const url = "http://localhost:5000/api/users/signup";
-        const response = await sendRequest(
+        const responseData = await sendRequest(
           url,
           "POST",
           JSON.stringify({
@@ -94,7 +94,7 @@ const Auth = () => {
             "Content-Type": "application/json"
           }
         );
-        login();
+        login(responseData.user.id);
       } catch (err) {}
     }
   };

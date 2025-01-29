@@ -26,11 +26,17 @@ export const useHttpClient = () => {
         );
 
         if (!response.ok) {
+          console.log(responseData.message,'this is the im getting')
           throw new Error(responseData.message);
         };
 
         return responseData;
       } catch (err) {
+        if (err.name === 'AbortError') {
+          console.log('Request was aborted');
+          return;
+        };
+        console.log(err.message,'this im getting')
         setError(err.message);
         throw err;
       } finally {
