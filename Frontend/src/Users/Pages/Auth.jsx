@@ -3,6 +3,7 @@ import "./Auth.css";
 import Card from "../../Shared/Components/UIElements/Card";
 import Input from "../../Shared/Components/FormElements/Input";
 import Button from "../../Shared/Components/FormElements/Button";
+import ImageUpload from "../../Shared/Components/FormElements/ImageUpload";
 import {
   VALIDATOR_EMAIL,
   VALIDATOR_MINLENGTH,
@@ -13,6 +14,7 @@ import { AuthContext } from "../../Shared/context/auth-context";
 import ErrorModal from "../../Shared/Components/UIElements/ErrorModal";
 import LoadingSpinner from "../../Shared/Components/UIElements/LoadingSpinner";
 import { useHttpClient } from "../../Shared/hooks/http-hook";
+
 
 const Auth = () => {
   const { login } = useContext(AuthContext);
@@ -38,7 +40,8 @@ const Auth = () => {
       setFormData(
         {
           ...formState.inputs,
-          name: undefined
+          name: undefined,
+          image:undefined
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -49,6 +52,10 @@ const Auth = () => {
           name: {
             value: "",
             isValid: false
+          },
+          image:{
+            value: null,
+            isValid : false
           }
         },
         false
@@ -81,18 +88,17 @@ const Auth = () => {
       } catch (err) {}
     } else {
       try {
+        const formData = new FormData();
+        formData.append('email',formState.inputs.email.value.toLowerCase());
+        formData.append('name',formState.inputs.name.value);
+        formData.append('password',formState.inputs.password.value);
+        formData.append('image',formState.inputs.image.value);
+
         const url = "http://localhost:5000/api/users/signup";
         const responseData = await sendRequest(
           url,
           "POST",
-          JSON.stringify({
-            name: formState.inputs.name.value,
-            email: formState.inputs.email.value.toLowerCase(),
-            password: formState.inputs.password.value
-          }),
-          {
-            "Content-Type": "application/json"
-          }
+          formData
         );
         login(responseData.user.id);
       } catch (err) {}
@@ -119,6 +125,9 @@ const Auth = () => {
               onInput={inputHandler}
             />
           )}
+           {!isLoginMode && (
+            <ImageUpload center id="image" onInput={inputHandler} />
+          )}
           <Input
             element="input"
             id="email"
@@ -133,8 +142,8 @@ const Auth = () => {
             id="password"
             type="password"
             label="Password"
-            validators={[VALIDATOR_MINLENGTH(5)]}
-            errorText="Please enter a valid password, at least 5 characters."
+            validators={[VALIDATOR_MINLENGTH(6)]}
+            errorText="Please enter a valid password, at least 6 characters."
             onInput={inputHandler}
           />
           <Button type="submit" disabled={!formState.isValid}>

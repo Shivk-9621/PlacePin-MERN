@@ -26,6 +26,7 @@ const signup = async (req, res, next) => {
 
     const { name, email, password } = req.body;
 
+
     let existingUser;
     try {
         existingUser = await User.findOne({ email: email });
@@ -42,7 +43,7 @@ const signup = async (req, res, next) => {
     const createdUser = new User({
         name,
         email,
-        image: 'https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-800x525.jpg',
+        image: req.file.path,
         password,
         places: []
     });
