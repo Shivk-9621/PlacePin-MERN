@@ -5,6 +5,8 @@ const getCoordsForAddress = require("../util/location");
 const Place = require("../models/place");
 const User = require("../models/user");
 const mongoose = require("mongoose");
+const fs = require('fs');
+
 
 const getPlaceByID = async (req, res, next) => {
     const placeId = req.params.pid;
@@ -81,7 +83,7 @@ const createPlace = async (req, res, next) => {
         description,
         address,
         location: coordinates,
-        image: "https://example.com/image.jpg",
+        image: req.file.path,
         creator
     });
 
@@ -140,6 +142,11 @@ const updatePlace = async (req, res, next) => {
             500
         );
         return next(error);
+    };
+
+    if(place.creator.toString() !== req.userData.userId){
+        const error = new HttpError("You are not allowed to edit this place.", 401);
+        return next(error);
     }
 
     place.title = title;
@@ -164,12 +171,28 @@ const deletePlace = async (req, res, next) => {
     
     try {
         place = await Place.findById(placeId).populate("creator");
-        
-        if (!place) {
-            const error = new HttpError("Could not find place for this id.", 404);
-            return next(error);
-        }
+    } catch (err) {
+        console.error(err);
+        const error = new HttpError(
+            "Something went wrong, could not delete place.",
+            500
+        );
+        return next(error);
+    }
 
+    if (!place) {
+        const error = new HttpError("Could not find place for this id.", 404);
+        return next(error);
+    };
+
+    if(place.creator.id !== req.userData.userId) {
+        const error = new HttpError("You are not allowed to delete this place.", 401);
+        return next(error);
+    }
+
+    const imagePath = place.image;
+
+    try{
         const sess = await mongoose.startSession();
         sess.startTransaction();
         await Place.deleteOne({ _id: placeId }, { session: sess });
@@ -177,9 +200,11 @@ const deletePlace = async (req, res, next) => {
         await place.creator.save({ session: sess });
         await sess.commitTransaction();
         
+        fs.unlink(imagePath, err => {
+            console.log(err);
+        });
         res.status(200).json({ message: "Deleted place." });
-    } catch (err) {
-        console.error(err);
+    }catch(err) {
         const error = new HttpError(
             "Something went wrong, could not delete place.",
             500

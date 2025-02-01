@@ -15,7 +15,6 @@ import ErrorModal from "../../Shared/Components/UIElements/ErrorModal";
 import LoadingSpinner from "../../Shared/Components/UIElements/LoadingSpinner";
 import { useHttpClient } from "../../Shared/hooks/http-hook";
 
-
 const Auth = () => {
   const { login } = useContext(AuthContext);
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -41,7 +40,7 @@ const Auth = () => {
         {
           ...formState.inputs,
           name: undefined,
-          image:undefined
+          image: undefined
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -53,9 +52,9 @@ const Auth = () => {
             value: "",
             isValid: false
           },
-          image:{
+          image: {
             value: null,
-            isValid : false
+            isValid: false
           }
         },
         false
@@ -84,27 +83,23 @@ const Auth = () => {
         );
 
         console.log(responseData, "this is response data");
-        login(responseData.user.id);
+        login(responseData.userId,responseData.token);
       } catch (err) {}
     } else {
       try {
         const formData = new FormData();
-        formData.append('email',formState.inputs.email.value.toLowerCase());
-        formData.append('name',formState.inputs.name.value);
-        formData.append('password',formState.inputs.password.value);
-        formData.append('image',formState.inputs.image.value);
+        formData.append("email", formState.inputs.email.value.toLowerCase());
+        formData.append("name", formState.inputs.name.value);
+        formData.append("password", formState.inputs.password.value);
+        formData.append("image", formState.inputs.image.value);
 
         const url = "http://localhost:5000/api/users/signup";
-        const responseData = await sendRequest(
-          url,
-          "POST",
-          formData
-        );
-        login(responseData.user.id);
+        const responseData = await sendRequest(url, "POST", formData);
+        console.log(responseData.userId)
+        login(responseData.userId,responseData.token);
       } catch (err) {}
     }
   };
-
 
   return (
     <>
@@ -125,8 +120,13 @@ const Auth = () => {
               onInput={inputHandler}
             />
           )}
-           {!isLoginMode && (
-            <ImageUpload center id="image" onInput={inputHandler} />
+          {!isLoginMode && (
+            <ImageUpload
+              center
+              id="image"
+              onInput={inputHandler}
+              errorText="Please provide an image."
+            />
           )}
           <Input
             element="input"

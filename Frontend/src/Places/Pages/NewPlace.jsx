@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import "./PlaceForm.css";
 import Input from "../../Shared/Components/FormElements/Input";
 import Button from "../../Shared/Components/FormElements/Button";
+import ImageUpload from "../../Shared/Components/FormElements/ImageUpload";
 import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE
@@ -12,7 +13,7 @@ import ErrorModal from "../../Shared/Components/UIElements/ErrorModal";
 import LoadingSpinner from "../../Shared/Components/UIElements/LoadingSpinner";
 
 import { useForm } from "../../Shared/hooks/form-hook";
-import { useHttpClient } from '../../Shared/hooks/http-hook';
+import { useHttpClient } from "../../Shared/hooks/http-hook";
 import { AuthContext } from "../../Shared/context/auth-context";
 
 const NewPlaces = () => {
@@ -33,38 +34,43 @@ const NewPlaces = () => {
       address: {
         value: "",
         isValid: false
+      },
+      image: {
+        value: null,
+        isValid: false
       }
     },
     false
   );
 
-
-
   const placeSubmitHandler = async (event) => {
     event.preventDefault();
-    console.log(formState.inputs);
+
     try {
+      const formData = new FormData();
+      formData.append('title',formState.inputs.title.value);
+      formData.append('description',formState.inputs.description.value);
+      formData.append('address',formState.inputs.address.value);
+      formData.append('creator',auth.userId);
+      formData.append('image',formState.inputs.image.value);
+
       const url = "http://localhost:5000/api/places";
-      const responseData = await sendRequest(url, 'POST', JSON.stringify({
-        title: formState.inputs.title.value,
-        description: formState.inputs.description.value,
-        address: formState.inputs.address.value,
-        creator: auth.userId,
-      }),
-      {'Content-Type':'application/json'}
-    );
+      const responseData = await sendRequest(
+        url,
+        "POST",
+        formData,{  
+          Authorization:'Bearer ' +  auth.token
+        }
+      );
 
-    history.push('/')
+      history.push("/");
       //Redirect the user to a different page
-    } catch (err) {
-
-    }
-
+    } catch (err) {}
   };
 
   return (
     <>
-    <ErrorModal error={error} onClear={clearError} />
+      <ErrorModal error={error} onClear={clearError} />
       <form className="place-form" onSubmit={placeSubmitHandler}>
         {isLoading && <LoadingSpinner asOverlay />}
         <Input
@@ -91,6 +97,11 @@ const NewPlaces = () => {
           validators={[VALIDATOR_REQUIRE(5)]}
           errorText="please enter a valid address."
           onInput={inputHandler}
+        />
+        <ImageUpload
+          id="image"
+          onInput={inputHandler}
+          errorText="Please provide an image."
         />
         <Button type="submit" disabled={!formState.isValid}>
           ADD PLACE
