@@ -68,7 +68,7 @@ const Auth = () => {
 
     if (isLoginMode) {
       try {
-        const url = "http://localhost:5000/api/users/login";
+        const url = `${process.env.VITE_BACKEND_URL}/users/login`;
 
         const responseData = await sendRequest(
           url,
@@ -93,7 +93,7 @@ const Auth = () => {
         formData.append("password", formState.inputs.password.value);
         formData.append("image", formState.inputs.image.value);
 
-        const url = "http://localhost:5000/api/users/signup";
+        const url = `${process.env.VITE_BACKEND_URL}/users/signup`;
         const responseData = await sendRequest(url, "POST", formData);
         console.log(responseData.userId)
         login(responseData.userId,responseData.token);

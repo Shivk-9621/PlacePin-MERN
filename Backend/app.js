@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const fs = require("fs");
 const path = require("path");
+require("dotenv").config();
+
 
 const placesRoutes = require("./routes/places-routes");
 const usersRoutes = require("./routes/users-routes");
@@ -49,11 +51,11 @@ app.use((error, req, res, next) => {
 
 mongoose
   .connect(
-    "mongodb+srv://RefresherSiva:RefresherSiva%409621@cluster0.si423.mongodb.net/places?retryWrites=true&w=majority&appName=Cluster0"
+   `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.si423.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
   )
   .then(() => {
     app.listen(5000);
-    console.log("Database connected");
+    console.log("Database connected"); 
   })
   .catch((error) => {
     console.log(error);

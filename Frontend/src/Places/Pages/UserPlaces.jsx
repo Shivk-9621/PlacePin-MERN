@@ -14,7 +14,7 @@ const UserPlaces = () => {
   useEffect(() => {
     const fetchPlaces = async () => {
       try {
-        const url = `http://localhost:5000/api/places/user/${userId}`;
+        const url = `${process.env.VITE_BACKEND_URL}/places/user/${userId}`;
         const responseData = await sendRequest(url);
         setLoadedPlaces(responseData.places);
       } catch (err) {}

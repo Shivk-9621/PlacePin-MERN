@@ -39,7 +39,7 @@ const UpdatePlace = () => {
   useEffect(() => {
     const fetchPlace = async () => {
       try {
-        const url = `http://localhost:5000/api/places/${placeId}`;
+        const url = `${process.env.VITE_BACKEND_URL}/places/${placeId}`;
         const responseData = await sendRequest(url);
         console.log(responseData.place);
         setLoadedPlace(responseData.place);
@@ -65,7 +65,7 @@ const UpdatePlace = () => {
   const placeUpdateSubmitHandler = async (event) => {
     event.preventDefault();
     try {
-      const url = `http://localhost:5000/api/places/${placeId}`;
+      const url = `${process.env.VITE_BACKEND_URL}/places/${placeId}`;
       const responseData = await sendRequest(
         url,
         "PATCH",
