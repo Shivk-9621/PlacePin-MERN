@@ -53,7 +53,7 @@ const NewPlaces = () => {
       formData.append('address',formState.inputs.address.value);
       formData.append('image',formState.inputs.image.value);
 
-      const url = `${process.env.VITE_BACKEND_URL}/places`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/places`;
       const responseData = await sendRequest(
         url,
         "POST",

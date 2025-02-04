@@ -13,7 +13,7 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const url = `${process.env.VITE_BACKEND_URL}/users`;
+        const url = `${import.meta.env.VITE_BACKEND_URL}/users`;
         const responseData = await sendRequest(url);
 
         setLoadedUsers(responseData?.users);

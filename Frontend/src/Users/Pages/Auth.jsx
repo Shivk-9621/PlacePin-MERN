@@ -65,10 +65,12 @@ const Auth = () => {
 
   const authSubmitHandler = async (event) => {
     event.preventDefault();
+    console.log('this gottiiiii',`${import.meta.env.VITE_BACKEND_URL}/users/login`)
 
     if (isLoginMode) {
       try {
-        const url = `${process.env.VITE_BACKEND_URL}/users/login`;
+        const url = `${import.meta.env.VITE_BACKEND_URL}/users/login`;
+        console.log(url,'this is url')
 
         const responseData = await sendRequest(
           url,
@@ -93,7 +95,7 @@ const Auth = () => {
         formData.append("password", formState.inputs.password.value);
         formData.append("image", formState.inputs.image.value);
 
-        const url = `${process.env.VITE_BACKEND_URL}/users/signup`;
+        const url = `${import.meta.env.VITE_BACKEND_URL}/users/signup`;
         const responseData = await sendRequest(url, "POST", formData);
         console.log(responseData.userId)
         login(responseData.userId,responseData.token);
